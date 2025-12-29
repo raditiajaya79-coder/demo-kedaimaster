@@ -1,6 +1,6 @@
 // src/utils/authApi.js
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://kedaimaster-api.lab.kediritechnopark.com';
+const API_BASE_URL = 'https://demo-kedaimaster-api.lab.kediritechnopark.com';
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 

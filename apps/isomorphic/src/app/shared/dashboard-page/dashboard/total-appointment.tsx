@@ -30,12 +30,11 @@ interface TotalAppointmentProps {
   previousWeekIncome: IncomeData[];
 }
 
-// 📅 Helper: generate 7 hari (Senin–Minggu) minggu ini dari date now
-const getCurrentWeekDates = (): string[] => {
-  const today = new Date();
-  const currentDay = today.getDay(); // Minggu = 0, Senin = 1
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - ((currentDay + 6) % 7)); // Set ke Senin
+// 📅 Helper: generate 7 hari (Senin–Minggu) dari tanggal yang diberikan
+const getWeekDates = (baseDate: Date): string[] => {
+  const currentDay = baseDate.getDay(); // Minggu = 0, Senin = 1
+  const weekStart = new Date(baseDate);
+  weekStart.setDate(baseDate.getDate() - ((currentDay + 6) % 7)); // Set ke Senin
 
   const weekDates = [];
   for (let i = 0; i < 7; i++) {
@@ -75,22 +74,30 @@ export default function TotalAppointment({
 }: TotalAppointmentProps) {
   const { theme } = useTheme();
 
+  console.log(initialCurrentWeekIncome)
+  console.log(initialPreviousWeekIncome)
+
   // Ambil minggu berjalan (7 hari, dari Senin ke Minggu)
-  const currentWeekDates = getCurrentWeekDates();
+  const currentWeekDates = getWeekDates(new Date());
+
+  // Ambil minggu lalu
+  const previousWeekDate = new Date();
+  previousWeekDate.setDate(previousWeekDate.getDate() - 7);
+  const previousWeekDates = getWeekDates(previousWeekDate);
 
   // Map income ke tanggal (biar cocok urutan harinya)
-  const mapIncomeToWeek = (data: IncomeData[]): number[] => {
+  const mapIncomeToWeek = (data: IncomeData[], dates: string[]): number[] => {
     const dateMap: Record<string, number> = {};
     data.forEach((item) => {
       const key = item.date.split('T')[0];
       dateMap[key] = item.income;
     });
 
-    return currentWeekDates.map((d) => dateMap[d] ?? 0);
+    return dates.map((d) => dateMap[d] ?? 0);
   };
 
-  const currentWeekIncome = fillToSevenDays(mapIncomeToWeek(initialCurrentWeekIncome));
-  const previousWeekIncome = fillToSevenDays(mapIncomeToWeek(initialPreviousWeekIncome));
+  const currentWeekIncome = fillToSevenDays(mapIncomeToWeek(initialCurrentWeekIncome, currentWeekDates));
+  const previousWeekIncome = fillToSevenDays(mapIncomeToWeek(initialPreviousWeekIncome, previousWeekDates));
 
   // Gabungkan data untuk chart
   const processedData = currentWeekIncome.map((current, index) => {
@@ -133,9 +140,8 @@ export default function TotalAppointment({
           {formatNumber(totalCurrentWeekIncome)}
         </Title>
         <span
-          className={`flex items-center gap-1 ${
-            incomeGrowth >= 0 ? 'text-green-dark' : 'text-red-dark'
-          }`}
+          className={`flex items-center gap-1 ${incomeGrowth >= 0 ? 'text-green-dark' : 'text-red-dark'
+            }`}
         >
           {incomeGrowth >= 0 ? (
             <TrendingUpIcon className="h-auto w-5" />

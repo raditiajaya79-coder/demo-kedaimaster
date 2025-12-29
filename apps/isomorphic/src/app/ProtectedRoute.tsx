@@ -7,7 +7,7 @@ const ProtectedRoute = () => {
   // Jika tidak ada token dan bukan di halaman yang boleh diakses tanpa login
   const isPublicPath =
     location.pathname === '/' ||
-    location.pathname.startsWith('/ff1f9a4d-2876-44b1-8e57-7c6a5d425755/menu');
+    location.pathname.startsWith('/demo/menu');
 
   if (!isPublicPath && !accessToken) {
     // Redirect ke landing page

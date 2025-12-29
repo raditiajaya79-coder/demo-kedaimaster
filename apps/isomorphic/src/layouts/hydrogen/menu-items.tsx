@@ -41,7 +41,7 @@ export const menuItems = [
   //   href: routes.dashboard.store,
   //   icon: <PiMapPinLineDuotone />,
   // },
-  
+
   {
     name: 'Data Umum',
     href: '#',
@@ -58,12 +58,12 @@ export const menuItems = [
       },
     ],
   },
-  
+
   // label start
   {
     name: 'Administrator',
   },
-  
+
   {
     name: 'Users',
     href: routes.dashboard.users,
@@ -74,12 +74,12 @@ export const menuItems = [
 export const bottomMenuItems = [
   {
     name: 'Kunjungi Menu Utama',
-    href: 'https://kedaimaster.com/ff1f9a4d-2876-44b1-8e57-7c6a5d425755/menu', // You might want to change this to an actual link for the cafe
+    href: 'https://demo.kedaimaster.com/demo/menu', // You might want to change this to an actual link for the cafe
     icon: <PiDoorOpenDuotone />,
   },
   {
     name: 'Download Aplikasi',
-    href: 'https://download.kedaimaster.apps.kediritechnopark.com/', // You might want to change this to an actual download link
+    href: 'https://download.demo.kedaimaster.apps.kediritechnopark.com/', // You might want to change this to an actual download link
     icon: <PiAndroidLogoDuotone />,
   },
 ];
