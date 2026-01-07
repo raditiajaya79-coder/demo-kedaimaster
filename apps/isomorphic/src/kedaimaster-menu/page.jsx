@@ -77,7 +77,7 @@ const App = () => {
     localStorage.removeItem('cart'); // or localStorage.clear() to clear everything
     console.log('Cart cleared on app start');
   }, []);
-  
+
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
