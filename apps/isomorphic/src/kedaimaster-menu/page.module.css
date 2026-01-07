@@ -795,3 +795,15 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Chat Mode Styles */
+.chatMode {
+  height: calc(100vh - 40px);
+  transition: all 0.3s ease-in-out;
+}
+
+@media (min-width: 1280px) {
+  .chatMode {
+    max-width: 480px;
+  }
+}

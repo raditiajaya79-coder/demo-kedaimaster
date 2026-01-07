@@ -5,7 +5,7 @@ import CartFormPage from './CartFormPage';
 import { createTransaction, getTransactionById, cancelTransactionById } from '@/kedaimaster-api/transactionsApi';
 import OrderDetails from './OrderDetails';
 
-const CartFAB = ({ cart, onIncreaseQuantity, onDecreaseQuantity, onResetCart, isDeleteModalOpen }) => {
+const CartFAB = ({ cart, onIncreaseQuantity, onDecreaseQuantity, onResetCart, isDeleteModalOpen, onVisibilityChange, onExpandChange, onHeightChange }) => {
     const [isCartExpanded, setIsCartExpanded] = useState(false);
     const [isEditingCart, setIsEditingCart] = useState(false);
     const [cartPage, setCartPage] = useState(1);
@@ -212,6 +212,44 @@ const CartFAB = ({ cart, onIncreaseQuantity, onDecreaseQuantity, onResetCart, is
         totalItems === 0 &&
         !newestTransactionId &&
         !transactionList.length > 0;
+
+    useEffect(() => {
+        if (onVisibilityChange) {
+            onVisibilityChange(!shouldHideFab);
+        }
+    }, [shouldHideFab, onVisibilityChange]);
+
+    useEffect(() => {
+        if (onExpandChange) {
+            onExpandChange(isCartExpanded);
+        }
+    }, [isCartExpanded, onExpandChange]);
+
+    // ==============================
+    // Monitor tinggi FAB
+    // ==============================
+    useEffect(() => {
+        if (!cartFabRef.current || !onHeightChange) return;
+
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                if (entry.target === cartFabRef.current) {
+                    // Gunakan offsetHeight untuk tinggi total termasuk padding/border jika box-sizing border-box
+                    // atau contentRect.height jika ingin content only.
+                    // Karena kita ingin posisi widget di atas *seluruh* elemen, offsetHeight lebih aman.
+                    // Namun ResizeObserver biasanya memberikan contentRect.
+                    // Kita bisa ambil entry.target.offsetHeight.
+                    onHeightChange(entry.target.offsetHeight);
+                }
+            }
+        });
+
+        resizeObserver.observe(cartFabRef.current);
+
+        return () => {
+            resizeObserver.disconnect();
+        };
+    }, [onHeightChange]);
 
     const ChevronRightIcon = () => (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
