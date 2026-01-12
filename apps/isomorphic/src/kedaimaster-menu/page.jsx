@@ -284,60 +284,76 @@ const App = () => {
     return <div className={styles.mobileContainer}>Error: {error.message}</div>;
   }
 
-  // Mobile: Full screen chat
-  if (isAiChatOpen && isMobile) {
-    return <AiRecommendationPage onBack={() => setIsAiChatOpen(false)} />;
-  }
-
+  // Mobile: Full screen chat - REMOVED for bottom sheet
+  // if (isAiChatOpen && isMobile) {
+  //   return <AiRecommendationPage onBack={() => setIsAiChatOpen(false)} />;
+  // }
   return (
     <div className={styles.appContainer}>
       <div
-        className={`${styles.mobileContainer} ${isAiChatOpen ? styles.chatMode : ''}`}
+        className={styles.mobileContainer}
         style={{ position: 'relative' }}
       >
-        {isAiChatOpen ? (
-          <div style={{ height: '100%' }}>
-            <AiRecommendationPage onBack={() => setIsAiChatOpen(false)} isWidget={true} />
-          </div>
-        ) : (
-          <>
-            <Header />
-            <main className={styles.mainContent}>
-              {/* <MusicPlayer /> */}
-              <Categories
-                categories={categoryItemsData}
-                activeCategory={activeCategory}
-                setActiveCategory={setActiveCategory}
-              />
-              <MenuList
-                menuItems={menuItemsData}
-                cart={cart}
-                onAddToCart={handleAddToCart}
-                onIncreaseQuantity={handleIncreaseQuantity}
-                onDecreaseQuantity={handleDecreaseQuantity}
-                activeCategory={activeCategory}
-              />
+        <div className={`${styles.scrollableContent} ${isAiChatOpen ? styles.noScroll : ''}`}>
+          <Header />
+          <main className={styles.mainContent}>
+            <Categories
+              categories={categoryItemsData}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+            />
+            <MenuList
+              menuItems={menuItemsData}
+              cart={cart}
+              onAddToCart={handleAddToCart}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
+              activeCategory={activeCategory}
+            />
 
-              <div className="
+            <div className="
                   h-[46px]
                   text-center
               ">© KEDAIMASTER.COM</div>
-            </main>
-          </>
+          </main>
+        </div>
+
+        {/* Chat Bottom Sheet - Moved Inside Container */}
+        <div
+          className={`${styles.chatOverlay} ${isAiChatOpen ? styles.visible : ''}`}
+          onClick={() => setIsAiChatOpen(false)}
+        />
+        <div className={`${styles.chatBottomSheet} ${isAiChatOpen ? styles.open : ''}`}>
+          {isAiChatOpen && (
+            <AiRecommendationPage
+              onBack={() => setIsAiChatOpen(false)}
+              isWidget={true}
+            />
+          )}
+        </div>
+
+        {!isAiChatOpen && (
+          <AiWelcomeModal
+            onStartAi={() => setIsAiChatOpen(true)}
+            bottomOffset={isFabVisible ? (cartHeight + 60) : 24}
+            style={{ position: isDesktop ? 'absolute' : 'fixed' }}
+          />
         )}
       </div>
 
-      <CartFAB
-        cart={cart}
-        onIncreaseQuantity={handleIncreaseQuantity}
-        onDecreaseQuantity={handleDecreaseQuantity}
-        onResetCart={handleResetCart}
-        isDeleteModalOpen={isDeleteModalOpen}
-        onTransactionComplete={handleTransactionComplete}
-        onVisibilityChange={setIsFabVisible}
-        onExpandChange={setIsCartExpanded}
-        onHeightChange={setCartHeight}
-      />
+      {!isAiChatOpen && (
+        <CartFAB
+          cart={cart}
+          onIncreaseQuantity={handleIncreaseQuantity}
+          onDecreaseQuantity={handleDecreaseQuantity}
+          onResetCart={handleResetCart}
+          isDeleteModalOpen={isDeleteModalOpen}
+          onTransactionComplete={handleTransactionComplete}
+          onVisibilityChange={setIsFabVisible}
+          onExpandChange={setIsCartExpanded}
+          onHeightChange={setCartHeight}
+        />
+      )}
 
       <DeleteModal
         isOpen={isDeleteModalOpen}
@@ -345,14 +361,6 @@ const App = () => {
         onConfirm={confirmDeleteItem}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
-
-      {!isAiChatOpen && (
-        <AiWelcomeModal
-          onStartAi={() => setIsAiChatOpen(true)}
-          bottomOffset={isFabVisible ? (cartHeight + 60) : 24}
-        />
-      )}
-
     </div>
   );
 };

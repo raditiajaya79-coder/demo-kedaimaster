@@ -9,6 +9,16 @@
   padding: 10px 14px;
 }
 
+@media (max-width: 767px) {
+  .appContainer {
+    padding: 0;
+  }
+  .mobileContainer {
+    border-radius: 0;
+    border: none;
+  }
+}
+
 .icon {
   width: 100%;
 }
@@ -18,10 +28,45 @@
   width: 100%;
   background-color: #ffffff;
   border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
   overflow: hidden;
   border: 1px solid #e0e0e0;
   transition: max-width 0.3s ease-in-out;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; /* Default for mobile */
+}
+
+.scrollableContent {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+
+.scrollableContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollableContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb {
+  background-color: #e2e8f0;
+  border-radius: 20px;
+  border: 2px solid transparent;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb:hover {
+  background-color: #cbd5e1;
+}
+
+.noScroll {
+  overflow: hidden !important;
+  overscroll-behavior: none;
 }
 
 /* Header */
@@ -691,6 +736,7 @@
 @media (min-width: 768px) {
   .mobileContainer {
     max-width: 1100px;
+    height: calc(100vh - 40px);
   }
 
   .mainContent {
@@ -796,14 +842,67 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Chat Mode Styles */
-.chatMode {
-  height: calc(100vh - 40px);
-  transition: all 0.3s ease-in-out;
+
+/* Bottom Sheet Chat Styles */
+.chatOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  touch-action: none;
 }
 
-@media (min-width: 1280px) {
-  .chatMode {
-    max-width: 480px;
+.chatOverlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.chatBottomSheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: none;
+  height: 65vh;
+  background-color: #ffffff;
+  border-radius: 24px 24px 0 0;
+  z-index: 2000;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08), 0 -2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.chatBottomSheet.open {
+  transform: translateY(0);
+}
+
+/* Desktop adjustment for bottom sheet */
+@media (min-width: 768px) {
+  .chatOverlay {
+    position: absolute;
+    border-radius: 24px;
+  }
+
+  .chatBottomSheet {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    left: auto;
+    width: 400px;
+    height: 70vh;
+    border-radius: 24px;
+    transform: translateY(120%);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .chatBottomSheet.open {
+    transform: translateY(0);
   }
 }
+
