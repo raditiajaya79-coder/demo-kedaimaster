@@ -6,17 +6,11 @@ const Typewriter = ({ text, speed = 15 }) => {
     const [displayedText, setDisplayedText] = useState('');
 
     useEffect(() => {
-        setDisplayedText('');
         let i = 0;
         const timer = setInterval(() => {
-            if (i < text.length - 1) { // -1 to handle last char in else or just let it run
-                setDisplayedText((prev) => prev + text.charAt(i));
-                i++;
-            } else if (i === text.length - 1) {
-                setDisplayedText((prev) => prev + text.charAt(i));
-                i++;
-                clearInterval(timer);
-            } else {
+            setDisplayedText(text.slice(0, i + 1));
+            i++;
+            if (i >= text.length) {
                 clearInterval(timer);
             }
         }, speed);
@@ -48,7 +42,19 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
     useEffect(() => {
         if (inputRef.current) {
             inputRef.current.style.height = 'auto';
-            const newHeight = Math.max(inputRef.current.scrollHeight, 40);
+
+            let contentHeight;
+            if (userInput) {
+                contentHeight = inputRef.current.scrollHeight;
+            } else {
+                // Heuristic for placeholder height
+                // Assuming approx 45 chars per line for mobile/widget width
+                const lines = Math.ceil((inputPlaceholder.length || 1) / 45);
+                // 20px line height + 24px padding
+                contentHeight = (lines * 20) + 24;
+            }
+
+            const newHeight = Math.max(contentHeight, 40);
             inputRef.current.style.height = newHeight + 'px';
         }
         // Switch logo based on input content
@@ -57,7 +63,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
         } else {
             if (hasStartedTyping) setHasStartedTyping(false);
         }
-    }, [userInput, hasStartedTyping]);
+    }, [userInput, hasStartedTyping, inputPlaceholder]);
 
     // Initial Welcome Message
     useEffect(() => {
