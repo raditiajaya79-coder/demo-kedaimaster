@@ -36,6 +36,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [hasStartedTyping, setHasStartedTyping] = useState(false);
     const [inputPlaceholder, setInputPlaceholder] = useState('Ketik pesan...');
 
     const chatEndRef = useRef(null);
@@ -50,7 +51,13 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
             const newHeight = Math.max(inputRef.current.scrollHeight, 40);
             inputRef.current.style.height = newHeight + 'px';
         }
-    }, [userInput]);
+        // Switch logo based on input content
+        if (userInput.trim().length > 0) {
+            if (!hasStartedTyping) setHasStartedTyping(true);
+        } else {
+            if (hasStartedTyping) setHasStartedTyping(false);
+        }
+    }, [userInput, hasStartedTyping]);
 
     // Initial Welcome Message
     useEffect(() => {
@@ -306,6 +313,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
         // Detect content type based on the first item
         const firstItem = items[0];
 
+
         // 1. SERVING TYPE (Dine In / Takeaway) - Special Category
         if (firstItem.category === 'SERVING_TYPE') {
             return (
@@ -346,9 +354,6 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
 
             return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-                    <button style={{ width: '100%', padding: '10px', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '12px', fontWeight: '600', cursor: 'pointer', marginBottom: '4px', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => handleQuickAction('Ganti Kategori')}>
-                        ← Pilih Kategori Lain
-                    </button>
                     {items.map((p, index) => {
                         const qty = quantities[p.name.toLowerCase()] || 0;
                         return (
@@ -447,7 +452,6 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                 @keyframes pulseRing { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
                 @keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-                @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
                 
                 /* Responsive Styles - Mobile First */
                 .ai-chat-container {
@@ -464,40 +468,31 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                 }
                 .ai-chat-container.widget-mode {
                     height: 100%;
-                    border-radius: 0;
+                    border-radius: 24px 24px 0 0;
+                    overflow: visible;
                 }
                 
                 /* Header */
                 .ai-header {
                     background: linear-gradient(135deg, #059669, #064e3b);
-                    padding: 12px 16px;
+                    padding: 20px 24px;
                     display: flex;
                     align-items: center;
-                    gap: 12px;
+                    gap: 16px;
                     color: #fff;
                     box-shadow: 0 4px 20px rgba(6, 78, 59, 0.15);
                     z-index: 10;
-                }
-                .ai-header-avatar {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 10px;
-                    background: rgba(255,255,255,0.2);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
+                    border-radius: 24px 24px 0 0;
+                    position: relative;
                 }
                 .ai-header-name {
-                    font-weight: 700;
-                    font-size: 14px;
+                    font-weight: 800;
+                    font-size: 20px;
                     display: flex;
                     align-items: center;
-                    gap: 6px;
-                }
-                .ai-header-status {
-                    font-size: 11px;
-                    opacity: 0.9;
+                    gap: 12px;
+                    letter-spacing: 0.5px;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }
                 .ai-back-btn {
                     width: 36px;
@@ -508,6 +503,9 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     color: #fff;
                     cursor: pointer;
                     font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
                 
                 /* Content Area */
@@ -517,7 +515,20 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     background: #f8fafc;
                     display: flex;
                     flex-direction: column;
+                    scrollbar-width: thin;
+                    scrollbar-color: #e2e8f0 transparent;
                 }
+                .ai-content-area::-webkit-scrollbar {
+                    width: 5px;
+                }
+                .ai-content-area::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .ai-content-area::-webkit-scrollbar-thumb {
+                    background-color: #e2e8f0;
+                    border-radius: 10px;
+                }
+                
                 .ai-slide-container {
                     flex: 1;
                     display: flex;
@@ -536,30 +547,32 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     width: 100%;
                 }
                 .ai-bot-avatar-large {
-                    width: 60px;
-                    height: 60px;
-                    border-radius: 20px;
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 28px;
                     background: linear-gradient(135deg, #059669, #064e3b);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    margin-bottom: 12px;
-                    box-shadow: 0 10px 25px rgba(6, 78, 59, 0.2);
+                    margin-bottom: 20px;
+                    box-shadow: 0 15px 35px rgba(6, 78, 59, 0.25);
                     overflow: hidden;
+                    border: 3px solid #fff;
                 }
                 .ai-bot-bubble {
                     background: #fff;
-                    padding: 12px 16px;
-                    border-radius: 16px;
-                    font-size: 14px;
+                    padding: 16px 24px;
+                    border-radius: 20px;
+                    font-size: 15px;
                     color: #1e293b;
                     text-align: center;
-                    box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
-                    max-width: 95%;
-                    line-height: 1.5;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                    max-width: 90%;
+                    line-height: 1.6;
                     border: 1px solid #f1f5f9;
-                    font-weight: 500;
+                    font-weight: 600;
                     word-break: break-word;
+                    position: relative;
                 }
                 
                 /* Dynamic Content */
@@ -613,6 +626,12 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     min-height: 40px;
                     max-height: 100px;
                     font-family: inherit;
+                    transition: all 0.2s ease;
+                }
+                .ai-input-textarea:focus {
+                    background: #fff;
+                    border-color: #059669;
+                    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
                 }
                 .ai-send-btn {
                     width: 100%;
@@ -627,7 +646,11 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: opacity 0.2s;
+                    transition: all 0.2s ease;
+                }
+                .ai-send-btn:active {
+                    transform: scale(0.98);
+                    opacity: 0.9;
                 }
                 
                 /* Product Cards */
@@ -640,9 +663,18 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     gap: 12px;
                     border: 1px solid #f1f5f9;
                     cursor: pointer;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
                     position: relative;
                     overflow: hidden;
+                    transition: all 0.2s ease;
+                }
+                .ai-product-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+                    border-color: #e2e8f0;
+                }
+                .ai-product-card:active {
+                    transform: scale(0.98);
                 }
                 .ai-product-image {
                     width: 50px;
@@ -682,10 +714,18 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     font-size: 12px;
                     font-weight: 600;
                     color: #334155;
-                    transition: all 0.2s ease;
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
                     min-width: 100px;
                     justify-content: center;
+                }
+                .ai-suggestion-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+                    border-color: #e2e8f0;
+                }
+                .ai-suggestion-btn:active {
+                    transform: scale(0.95);
                 }
                 
                 /* Tablet & Desktop Responsive */
@@ -757,6 +797,15 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                         min-width: 120px;
                     }
                 }
+
+                @media (min-width: 768px) {
+                    .ai-chat-container.widget-mode {
+                        border-radius: 24px;
+                    }
+                    .ai-input-area {
+                        border-radius: 0 0 24px 24px;
+                    }
+                }
                 
                 /* Desktop Only - Centered layout (1280px+) */
                 @media (min-width: 1280px) {
@@ -770,7 +819,6 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     .ai-chat-container.widget-mode {
                         height: 100%;
                         margin: 0;
-                        border-radius: 0;
                         max-width: 100%;
                     }
                     .ai-chat-container:not(.widget-mode) .ai-header {
@@ -779,7 +827,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                         border-radius: 32px 32px 0 0;
                     }
                     .ai-chat-container.widget-mode .ai-header {
-                        border-radius: 0;
+                        padding: 20px 24px;
                     }
                     .ai-chat-container:not(.widget-mode) .ai-header-name {
                         font-size: 20px;
@@ -861,16 +909,29 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                 <button className="ai-back-btn" onClick={onBack}>
                     ←
                 </button>
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div className="ai-header-avatar">
-                        <img src="/kedaimaster-assets/catat.png" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                    <div>
-                        <div className="ai-header-name">Asisten Pesanan <span style={{ fontSize: '10px', background: '#fff', color: '#064e3b', padding: '2px 6px', borderRadius: '4px', fontWeight: '800' }}>AI</span></div>
-                        <div className="ai-header-status">Online</div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: '5', paddingRight: '120px' }}>
+                    <div className="ai-header-name">
+                        Asisten Pesanan
                     </div>
                 </div>
-                {!isWidget && <button style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer' }}>⋮</button>}
+
+                {/* Pop-out Logo: Perfectly aligned with header bottom to hide cut-off */}
+                <img
+                    src={hasStartedTyping ? "/kedaimaster-assets/catat.png" : "/kedaimaster-assets/mikirr.png"}
+                    alt="Logo"
+                    style={{
+                        position: 'absolute',
+                        bottom: '0', // Perfectly aligned with header bottom
+                        right: '-10px',
+                        width: '200px',
+                        height: 'auto',
+                        zIndex: '20',
+                        filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.3))',
+                        pointerEvents: 'none'
+                    }}
+                />
+
+                {!isWidget && <button style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '24px', cursor: 'pointer', position: 'relative', zIndex: '5' }}>⋮</button>}
             </div>
 
             {/* Content Area (Single Slide) */}
@@ -878,7 +939,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                 {isTyping ? (
                     <div className="ai-typing-screen">
                         <div className="ai-typing-avatar-wrapper">
-                            <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '50%', border: '2px solid #059669', animation: 'pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite' }}></div>
+                            <div style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: '28px', border: '2px solid #059669', animation: 'pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite' }}></div>
                             <div className="ai-bot-avatar-large">
                                 <img src="/kedaimaster-assets/catat.png" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
@@ -894,7 +955,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                     lastMessage && (
                         <div className="ai-slide-container">
                             <div className="ai-bot-section">
-                                <div className="ai-bot-avatar-large" style={{ animation: 'float 3s ease-in-out infinite' }}>
+                                <div className="ai-bot-avatar-large">
                                     <img src="/kedaimaster-assets/catat.png" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                                 <div className="ai-bot-bubble">
