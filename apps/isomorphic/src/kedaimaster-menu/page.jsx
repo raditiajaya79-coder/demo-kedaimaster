@@ -77,7 +77,7 @@ const App = () => {
     localStorage.removeItem('cart'); // or localStorage.clear() to clear everything
     console.log('Cart cleared on app start');
   }, []);
-  
+
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
@@ -142,7 +142,7 @@ const App = () => {
       <div className={styles.mobileContainer}>
         <Header />
         <main className={styles.mainContent}>
-          {/* <MusicPlayer /> */}
+          <MusicPlayer />
           <Categories
             categories={categoryItemsData}
             activeCategory={activeCategory}
