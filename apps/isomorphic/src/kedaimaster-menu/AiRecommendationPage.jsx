@@ -70,7 +70,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
         if (!isTyping && inputRef.current) {
             // Small delay to ensure the textarea is enabled and visible
             const timer = setTimeout(() => {
-                inputRef.current.focus();
+                inputRef.current.focus({ preventScroll: true });
             }, 100);
             return () => clearTimeout(timer);
         }
@@ -516,7 +516,7 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
             <style>{`
                 @keyframes pulseRing { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
                 @keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                 
                 /* Responsive Styles - Mobile First */
                 .ai-chat-container {
@@ -534,7 +534,6 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                 .ai-chat-container.widget-mode {
                     height: 100%;
                     border-radius: 24px 24px 0 0;
-                    overflow: visible;
                 }
                 
                 /* Header */
