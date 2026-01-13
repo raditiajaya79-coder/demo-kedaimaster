@@ -17,10 +17,10 @@ const Typewriter = ({ text, speed = 15 }) => {
         return () => clearInterval(timer);
     }, [text, speed]);
 
-    return <>{displayedText.split('\n').map((line, i) => (
+    return <>{(typeof displayedText === 'string' ? displayedText : '').split('\n').map((line, i) => (
         <React.Fragment key={i}>
             {line}
-            {i < displayedText.split('\n').length - 1 && <br />}
+            {i < (typeof displayedText === 'string' ? displayedText : '').split('\n').length - 1 && <br />}
         </React.Fragment>
     ))}</>;
 };
@@ -65,6 +65,17 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
         }
     }, [userInput, hasStartedTyping, inputPlaceholder]);
 
+    // Auto-focus input when AI finishes typing
+    useEffect(() => {
+        if (!isTyping && inputRef.current) {
+            // Small delay to ensure the textarea is enabled and visible
+            const timer = setTimeout(() => {
+                inputRef.current.focus();
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [isTyping]);
+
     // Initial Welcome Message
     useEffect(() => {
         if (!hasWelcomed.current) {
@@ -94,12 +105,19 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
         setUserInput('');
         setInputPlaceholder('Ketik pesan...'); // Reset placeholder on send
 
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+
         await fetchAiResponse(text);
     };
 
     const handleQuickAction = async (text) => {
         addUserMessage(text);
         setInputPlaceholder('Ketik pesan...'); // Reset placeholder
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
         await fetchAiResponse(text);
     };
 
@@ -314,10 +332,22 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
 
     // --- RENDER HELPERS ---
     const renderContent = (items) => {
-        if (!items || items.length === 0) return null;
+        if (!items) return null;
+
+        let data = items;
+        let metadata = {};
+
+        // Handle new format: items is an object with a 'data' array
+        if (!Array.isArray(items) && items.data) {
+            data = items.data;
+            metadata = items;
+        }
+
+        if (!Array.isArray(data) || data.length === 0) return null;
 
         // Detect content type based on the first item
-        const firstItem = items[0];
+        const firstItem = data[0];
+        if (!firstItem) return null;
 
 
         // 1. SERVING TYPE (Dine In / Takeaway) - Special Category
@@ -400,12 +430,41 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
             return (
                 <div style={{ background: '#fff', padding: '16px', borderRadius: '16px', border: '1px solid #e2e8f0', width: '100%', boxShadow: '0 6px 20px rgba(0,0,0,0.04)' }}>
                     <div style={{ marginBottom: '10px', fontWeight: '600', color: '#059669', fontSize: '14px' }}>Detail Pesanan:</div>
-                    {items.map((item, index) => (
+                    {data.map((item, index) => (
                         <div key={index} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px', color: '#64748b' }}>
                             <span>{item.qty}x {item.name} {item.notes ? `(${item.notes})` : ''}</span>
-                            <span>{formatPrice(item.price * item.qty)}</span>
+                            <span>{formatPrice(item.price || (item.unitPrice * item.qty))}</span>
                         </div>
                     ))}
+
+                    {/* Display Metadata if available */}
+                    {(metadata.totalAmount || metadata.total) && (
+                        <div style={{ borderTop: '1px solid #f1f5f9', marginTop: '10px', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', fontWeight: '700', color: '#1e293b' }}>
+                            <span>Total</span>
+                            <span>{formatPrice(metadata.totalAmount || metadata.total)}</span>
+                        </div>
+                    )}
+                    {metadata.customerName && (
+                        <div style={{ marginTop: '12px', padding: '10px', background: '#f8fafc', borderRadius: '12px', fontSize: '12px', color: '#475569', border: '1px solid #f1f5f9' }}>
+                            <div style={{ fontWeight: '600', marginBottom: '4px', color: '#059669' }}>Info Pemesan:</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                                <span>Nama:</span>
+                                <span style={{ fontWeight: '600' }}>{metadata.customerName}</span>
+                            </div>
+                            {metadata.customerPhone && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                                    <span>Telp:</span>
+                                    <span style={{ fontWeight: '600' }}>{metadata.customerPhone}</span>
+                                </div>
+                            )}
+                            {metadata.servingType && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span>Tipe:</span>
+                                    <span style={{ fontWeight: '600' }}>{metadata.servingType === 'DINE_IN' ? 'Makan di Tempat' : 'Bawa Pulang'}</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             );
         }
@@ -966,12 +1025,12 @@ const AiRecommendationPage = ({ onBack, isWidget = false }) => {
                                 </div>
                                 <div className="ai-bot-bubble">
                                     {lastMessage.type === 'bot' ? (
-                                        <Typewriter text={lastMessage.text} key={lastMessage.id} />
+                                        <Typewriter text={typeof lastMessage.text === 'string' ? lastMessage.text : ''} key={lastMessage.id} />
                                     ) : (
-                                        lastMessage.text.split('\n').map((line, i) => (
+                                        (typeof lastMessage.text === 'string' ? lastMessage.text : '').split('\n').map((line, i) => (
                                             <React.Fragment key={i}>
                                                 {line}
-                                                {i < lastMessage.text.split('\n').length - 1 && <br />}
+                                                {i < (typeof lastMessage.text === 'string' ? lastMessage.text : '').split('\n').length - 1 && <br />}
                                             </React.Fragment>
                                         ))
                                     )}
