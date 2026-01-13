@@ -297,6 +297,7 @@ const App = () => {
         <div className={`${styles.scrollableContent} ${isAiChatOpen ? styles.noScroll : ''}`}>
           <Header />
           <main className={styles.mainContent}>
+            <MusicPlayer />
             <Categories
               categories={categoryItemsData}
               activeCategory={activeCategory}

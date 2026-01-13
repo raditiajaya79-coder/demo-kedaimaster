@@ -273,6 +273,7 @@
 /* ================================================= */
 
 @media (max-width: 1200px) {
+
   /* Menggabungkan properti grid untuk tablet besar/desktop kecil */
   .feature-grid,
   .product-grid,
@@ -287,21 +288,26 @@
     gap: 1.5rem;
     text-align: center;
   }
+
   .feature-grid,
   .product-grid,
   .pricing-options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
   .copx {
     flex-direction: column;
   }
+
   .copx-section {
     grid-template-columns: 1fr;
     text-align: center;
   }
+
   .nav-toggle {
     display: inline-flex;
   }
+
   /* Navigasi Mobile */
   .nav-links {
     position: absolute;
@@ -314,9 +320,11 @@
     padding: 0.75rem;
     display: none;
   }
+
   .nav-links.show {
     display: flex;
   }
+
   /* Penyesuaian gambar produk di mockup 3D (menggunakan kelas baru) */
   .escappucino-img,
   .chickenkatsu-img {
@@ -325,15 +333,18 @@
 }
 
 @media (max-width: 576px) {
+
   /* Menggabungkan properti grid untuk mobile */
   .feature-grid,
   .product-grid,
   .pricing-options {
     grid-template-columns: 1fr;
   }
+
   .price-card {
     padding: 1rem;
   }
+
   .product-card img {
     height: 160px;
   }
@@ -388,12 +399,6 @@
   z-index: 10;
 }
 
-/* Second Screen Content */
-.secondmain {
-  width: 100%;
-  height: 100%;
-  animation: reportScrollBottom 5s infinite;
-}
 .secondmain img {
   width: 100%;
 }
@@ -403,15 +408,19 @@
   0% {
     transform: translateY(0%);
   }
+
   30% {
     transform: translateY(0%);
   }
+
   50% {
-    transform: translateY(-43%);
+    transform: translateY(-197%);
   }
+
   80% {
-    transform: translateY(-43%);
+    transform: translateY(-197%);
   }
+
   100% {
     transform: translateY(0%);
   }
@@ -426,6 +435,7 @@
   /* Mengganti .main>div:nth-child(2) */
   animation: playerClick 20s infinite;
 }
+
 .body-content {
   /* Mengganti .main>div:nth-child(3) */
   animation: bodyDown 20s infinite;
@@ -436,6 +446,7 @@
   /* Mengganti .player>img:nth-child(1) */
   animation: playerUnexpandedOpacity 20s infinite;
 }
+
 .player-img-expanded-2 {
   /* Mengganti .player>img:nth-child(2) */
   animation: player2ExpandedOpacity 20s infinite;
@@ -443,6 +454,7 @@
   top: 0;
   left: 0;
 }
+
 .player-img-expanded-3 {
   /* Mengganti .player>img:nth-child(3) */
   animation: player3ExpandedOpacity 20s infinite;
@@ -450,6 +462,7 @@
   top: 0;
   left: 0;
 }
+
 .player-img-expanded-4 {
   /* Mengganti .player>img:nth-child(4) */
   animation: player4ExpandedOpacity 20s infinite;
@@ -457,6 +470,7 @@
   top: 0;
   left: 0;
 }
+
 .player-img-expanded-5 {
   /* Mengganti .player>img:nth-child(5) */
   animation: player5ExpandedOpacity 20s infinite;
@@ -477,12 +491,14 @@
   justify-content: center;
   align-items: center;
 }
+
 .player-search-box img {
   /* Mengganti .player>div:nth-child(6)>img:nth-child(1) */
   width: 70%;
   height: 70%;
   object-fit: contain;
 }
+
 .player-search-text-anim {
   /* Mengganti .player>div:nth-child(6)>div:nth-child(2) */
   position: absolute;
@@ -501,6 +517,7 @@
   left: 0;
   z-index: 6;
 }
+
 .music-track-2 {
   /* Mengganti .player>img:nth-child(8) */
   animation: music2Expanded 20s infinite;
@@ -509,6 +526,7 @@
   left: 0;
   z-index: 6;
 }
+
 .music-track-3 {
   /* Mengganti .player>img:nth-child(9) */
   animation: musicExpanded 20s infinite;
@@ -545,10 +563,12 @@
   position: relative;
   width: 100%;
 }
+
 .escappucino {
   top: -67.7%;
   animation: escappucinoscaleAnimation 20s infinite;
 }
+
 .chickenkatsu {
   top: -26%;
   animation: chickenkatsuscaleAnimation 20s infinite;
@@ -567,6 +587,7 @@
   top: 86%;
   animation: cartbuttonscaleAnimation 20s infinite;
 }
+
 .cartbutton-area img {
   width: 100%;
 }
@@ -576,6 +597,7 @@
   position: absolute;
   animation: cartbuttonchildOpacityAnimation 20s infinite;
 }
+
 .cartbutton-icon-2 {
   /* Mengganti .cartbutton>img:nth-child(2) */
   animation: cartbuttonchildOpacityAnimation2 20s infinite;
@@ -590,6 +612,7 @@
   left: 100%;
   animation: cartslideinAnimation 20s infinite;
 }
+
 .cart-screen img:nth-child(1) {
   width: 100%;
   height: 100%;
@@ -631,52 +654,68 @@
   0% {
     transform: translateY(0);
   }
+
   10% {
     transform: translateY(0);
   }
+
   15% {
     transform: translateY(-16.666%);
   }
+
   20% {
     transform: translateY(-16.666%);
   }
+
   25% {
     transform: translateY(-33.333%);
   }
+
   30% {
     transform: translateY(-33.333%);
   }
+
   35% {
     transform: translateY(-50%);
   }
+
   40% {
     transform: translateY(-50%);
   }
+
   45% {
     transform: translateY(-66.666%);
   }
+
   50% {
     transform: translateY(-66.666%);
   }
+
   55% {
     transform: translateY(-83.333%);
   }
+
   60% {
     transform: translateY(-83.333%);
   }
+
   65% {
     transform: translateY(-100%);
   }
+
   70% {
     transform: translateY(-100%);
   }
+
   90% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(0);
   }
 }
+
 .swiper-content {
   animation: textSwiper 15s infinite ease-in-out;
 }
@@ -686,18 +725,23 @@
   0% {
     transform: translateY(0);
   }
+
   10% {
     transform: translateY(0);
   }
+
   15% {
     transform: translateY(-50%);
   }
+
   57.5% {
     transform: translateY(-50%);
   }
+
   62.5% {
     transform: translateY(0%);
   }
+
   100% {
     transform: translateY(0%);
   }
@@ -707,39 +751,51 @@
   0% {
     transform: scale(1);
   }
+
   64% {
     transform: scale(1);
   }
+
   65% {
     transform: scale(0.8);
   }
+
   66% {
     transform: scale(1);
   }
+
   67% {
     transform: scale(0.8);
   }
+
   68% {
     transform: scale(1);
   }
+
   90% {
     transform: scale(1);
   }
+
   91% {
     transform: scale(0.8);
   }
+
   92% {
     transform: scale(1);
   }
+
   94% {
     transform: scale(1);
   }
+
   95% {
     transform: scale(0.8);
   }
+
   96% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1);
   }
@@ -749,30 +805,39 @@
   0% {
     margin-top: 0%;
   }
+
   64% {
     margin-top: 0%;
   }
+
   65% {
-    margin-top: 20%;
+    margin-top: 25%;
   }
+
   66% {
-    margin-top: 20%;
+    margin-top: 25%;
   }
+
   67% {
-    margin-top: 96%;
+    margin-top: 110%;
   }
+
   90% {
-    margin-top: 96%;
+    margin-top: 110%;
   }
+
   91% {
-    margin-top: 20%;
+    margin-top: 25%;
   }
+
   97% {
-    margin-top: 20%;
+    margin-top: 25%;
   }
+
   98% {
     margin-top: 0%;
   }
+
   100% {
     margin-top: 0%;
   }
@@ -783,18 +848,23 @@
   0% {
     filter: opacity(0);
   }
+
   67% {
     filter: opacity(0);
   }
+
   70% {
     filter: opacity(1);
   }
+
   79% {
     filter: opacity(1);
   }
+
   81% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -802,16 +872,19 @@
 
 @keyframes playerSearchText {
   0% {
-    transform: translate(0%, 0);
+    transform: translate(-90%, 0);
   }
+
   71% {
-    transform: translate(0%, 0);
+    transform: translate(-90%, 0);
   }
+
   74% {
-    transform: translate(70%, 0);
+    transform: translate(-20%, 0);
   }
+
   100% {
-    transform: translate(70%, 0);
+    transform: translate(-20%, 0);
   }
 }
 
@@ -819,23 +892,29 @@
   0% {
     filter: opacity(0);
   }
+
   73% {
     filter: opacity(0);
     transform: scale(0.7);
   }
+
   75% {
     filter: opacity(1);
     transform: scale(0.9);
   }
+
   89% {
     filter: opacity(1);
   }
+
   90% {
     filter: opacity(0);
   }
+
   98% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
     transform: scale(0.9);
@@ -846,35 +925,44 @@
   0% {
     filter: opacity(0);
   }
+
   73% {
     filter: opacity(0);
     transform: scale(0.7);
   }
+
   75% {
     filter: opacity(1);
     transform: scale(0.9);
   }
+
   77% {
     filter: opacity(1);
     transform: scale(0.9);
   }
+
   79% {
     filter: opacity(1);
     transform: scale(0.8) translate(0, 0);
   }
+
   85% {
     filter: opacity(1);
     transform: scale(0.8) translate(120%, 0);
   }
+
   89% {
     filter: opacity(1);
   }
+
   90% {
     filter: opacity(0);
   }
+
   98% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
     transform: scale(0.8) translate(120%, 0);
@@ -885,18 +973,23 @@
   0% {
     opacity: 1;
   }
+
   65% {
     opacity: 1;
   }
+
   66% {
     opacity: 0;
   }
+
   94% {
     opacity: 0;
   }
+
   95% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
   }
@@ -906,15 +999,19 @@
   0% {
     filter: opacity(0);
   }
+
   65% {
     filter: opacity(0);
   }
+
   66% {
     filter: opacity(1);
   }
+
   67% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -924,18 +1021,23 @@
   0% {
     filter: opacity(0);
   }
+
   66% {
     filter: opacity(0);
   }
+
   67% {
     filter: opacity(1);
   }
+
   89% {
     filter: opacity(1);
   }
+
   90% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -945,18 +1047,23 @@
   0% {
     filter: opacity(0);
   }
+
   84% {
     filter: opacity(0);
   }
+
   85% {
     filter: opacity(1);
   }
+
   89% {
     filter: opacity(1);
   }
+
   90% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -966,21 +1073,27 @@
   0% {
     filter: opacity(0);
   }
+
   90% {
     filter: opacity(0);
   }
+
   91% {
     filter: opacity(1);
   }
+
   95% {
     filter: opacity(1);
   }
+
   96% {
     filter: opacity(0);
   }
+
   98% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -991,69 +1104,80 @@
   0% {
     transform: scale(1);
   }
+
   5% {
     transform: scale(1);
   }
+
   7.5% {
     transform: scale(0.8);
   }
+
   10% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1);
   }
 }
 
 /* Keyframes Opacity Escappucino (Menimpa kelas .item-img-default/.item-img-clicked) */
-.escappucino .item-img-default {
-  animation: escappucino-default-opac 20s infinite;
-}
-@keyframes escappucino-default-opac {
+@keyframes escappucinochildOpacityAnimation {
   0% {
     opacity: 1;
   }
+
   5% {
     opacity: 1;
   }
+
   7.5% {
     opacity: 0;
   }
+
   10% {
     opacity: 0;
   }
+
   50% {
     opacity: 0;
   }
+
   60% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
   }
 }
-.escappucino .item-img-clicked {
-  animation: escappucino-clicked-opac 20s infinite;
-}
-@keyframes escappucino-clicked-opac {
+
+@keyframes escappucinochildOpacityAnimation2 {
   0% {
     opacity: 0;
   }
+
   5% {
     opacity: 0;
   }
+
   7.5% {
     opacity: 1;
   }
+
   10% {
     opacity: 1;
   }
+
   50% {
     opacity: 1;
   }
+
   60% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
@@ -1064,69 +1188,80 @@
   0% {
     transform: scale(1);
   }
+
   15% {
     transform: scale(1);
   }
+
   17.5% {
     transform: scale(0.8);
   }
+
   20% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1);
   }
 }
 
-/* Keyframes Opacity Chicken Katsu (Menimpa kelas .item-img-default/.item-img-clicked) */
-.chickenkatsu .item-img-default {
-  animation: chickenkatsu-default-opac 20s infinite;
-}
-@keyframes chickenkatsu-default-opac {
+
+@keyframes chickenkatsuchildOpacityAnimation {
   0% {
     opacity: 1;
   }
+
   15% {
     opacity: 1;
   }
+
   17.5% {
     opacity: 0;
   }
+
   20% {
     opacity: 0;
   }
+
   50% {
     opacity: 0;
   }
+
   60% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
   }
 }
-.chickenkatsu .item-img-clicked {
-  animation: chickenkatsu-clicked-opac 20s infinite;
-}
-@keyframes chickenkatsu-clicked-opac {
+
+@keyframes chickenkatsuchildOpacityAnimation2 {
   0% {
     opacity: 0;
   }
+
   15% {
     opacity: 0;
   }
+
   17.5% {
     opacity: 1;
   }
+
   20% {
     opacity: 1;
   }
+
   50% {
     opacity: 1;
   }
+
   60% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
@@ -1138,31 +1273,39 @@
     transform: scale(1);
     filter: opacity(0);
   }
+
   5% {
     transform: scale(1);
     filter: opacity(0);
   }
+
   7.5% {
     transform: scale(1);
     filter: opacity(1);
   }
+
   25% {
     transform: scale(1);
   }
+
   27.5% {
     transform: scale(0.8);
   }
+
   30% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1);
     filter: opacity(1);
   }
+
   60% {
     transform: scale(1);
     filter: opacity(0);
   }
+
   100% {
     transform: scale(1);
     filter: opacity(0);
@@ -1173,15 +1316,19 @@
   0% {
     opacity: 1;
   }
+
   15% {
     opacity: 1;
   }
+
   17.5% {
     opacity: 0;
   }
+
   20% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
@@ -1191,15 +1338,19 @@
   0% {
     opacity: 0;
   }
+
   15% {
     opacity: 0;
   }
+
   17.5% {
     opacity: 1;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
   }
@@ -1210,18 +1361,23 @@
   0% {
     left: 100%;
   }
+
   30% {
     left: 100%;
   }
+
   32.5% {
     left: 0%;
   }
+
   55% {
     left: 0%;
   }
+
   57.5% {
     left: 100%;
   }
+
   100% {
     left: 100%;
   }
@@ -1231,15 +1387,19 @@
   0% {
     transform: scale(1);
   }
+
   37.5% {
     transform: scale(1);
   }
+
   40% {
     transform: scale(0.8);
   }
+
   42.5% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1);
   }
@@ -1250,18 +1410,23 @@
   0% {
     filter: opacity(0);
   }
+
   42.5% {
     filter: opacity(0);
   }
+
   45% {
     filter: opacity(1);
   }
+
   52.5% {
     filter: opacity(1);
   }
+
   55% {
     filter: opacity(0);
   }
+
   100% {
     filter: opacity(0);
   }
@@ -1271,18 +1436,23 @@
   0% {
     transform: scale(0);
   }
+
   42.5% {
     transform: scale(0);
   }
+
   45% {
     transform: scale(1);
   }
+
   52.5% {
     transform: scale(1);
   }
+
   55% {
     transform: scale(0);
   }
+
   100% {
     transform: scale(0);
   }
@@ -1440,6 +1610,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1450,6 +1621,7 @@
     transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
   }
+
   to {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
