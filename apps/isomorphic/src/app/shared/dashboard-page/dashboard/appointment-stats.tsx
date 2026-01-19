@@ -55,7 +55,7 @@ export default function AppointmentStats({ className, dashboardData, compareType
   const formatRupiah = (val: number) =>
     'Rp ' + val.toLocaleString('id-ID', { maximumFractionDigits: 0 });
   const formatPercent = (val: number) =>
-    (val > 0 ? '+' : '') + val.toFixed(2) + '%';
+    val.toFixed(0) + '%';
 
   useEffect(() => {
     console.log('Dashboard Data in AppointmentStats:', dashboardData);
@@ -80,7 +80,7 @@ export default function AppointmentStats({ className, dashboardData, compareType
     },
     {
       title: 'Pendapatan',
-      amount: formatRupiah(income),
+      amount: formatRupiah(income > 0 ? income - outcome : income),
       increased: growthIncome >= 0,
       percentage: formatPercent(growthIncome),
       compareType: compareType,
