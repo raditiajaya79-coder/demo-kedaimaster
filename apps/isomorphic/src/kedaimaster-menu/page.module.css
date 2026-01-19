@@ -9,16 +9,6 @@
   padding: 10px 14px;
 }
 
-@media (max-width: 767px) {
-  .appContainer {
-    padding: 0;
-  }
-  .mobileContainer {
-    border-radius: 0;
-    border: none;
-  }
-}
-
 .icon {
   width: 100%;
 }
@@ -35,7 +25,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100dvh; /* Default for mobile */
+  height: 100dvh;
+  /* Default for mobile */
 }
 
 .scrollableContent {
@@ -350,7 +341,7 @@
 }
 
 .cartPageHeader h3 {
-    color: white;
+  color: white;
 
 }
 
@@ -840,8 +831,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -1035,8 +1031,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 

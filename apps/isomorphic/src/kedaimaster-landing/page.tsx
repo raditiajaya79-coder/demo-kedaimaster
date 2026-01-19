@@ -1,4 +1,17 @@
-import React from 'react';
+interface AuthModalProps {
+  show: boolean;
+  onClose: (loginSuccess?: boolean) => void;
+  initialMode: 'login' | 'register';
+}
+
+interface PricingModalProps {
+  show: boolean;
+  onClose: () => void;
+  packageType: string;
+}
+
+import React, { useState, useEffect } from "react";
+
 import {
   Store,
   PlayCircle,
@@ -21,7 +34,287 @@ import {
 import "./page.css";
 
 
+import { useNavigate } from "react-router-dom";
+// Impor AuthModal yang sudah dipisah
+// Impor fungsi API
+import { getTokens, clearTokens } from "@/kedaimaster-api/authApi";
+import authApiHandlers, { Profile } from "@/kedaimaster-api-handlers/authApiHandlers";
+import PricingModal from "./PricingModal"; // Import the PricingModal component
+
+
+const link = document.createElement("link");
+link.rel = "stylesheet";
+link.href =
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+document.head.appendChild(link);
+// Mengimpor fungsi otentikasi dari file API (mock)
+import { authenticate, registerUser } from '@/kedaimaster-api/authApi';
+
+interface UserData extends Profile { }
+
+
+// --- Komponen Modal Otentikasi ---
+const AuthModal: React.FC<AuthModalProps> = ({ show, onClose, initialMode }) => {
+  const navigate = useNavigate();
+  const [mode, setMode] = useState<'login' | 'register'>(initialMode); // 'login' or 'register'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    setMode(initialMode);
+    setError('');
+    setSuccessMessage('');
+    setEmail('');
+    setPassword('');
+    setName('');
+    setPasswordConfirm('');
+  }, [show, initialMode]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+    setIsLoading(true);
+    try {
+      const user = await authenticate({ email, password });
+      console.log('Login berhasil:', user);
+      setSuccessMessage('Login berhasil!');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+    } catch (err: any) {
+      setError(err.message || 'Email atau password salah.');
+      console.error('Login gagal:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+    setIsLoading(true);
+    try {
+      if (password !== passwordConfirm) {
+        throw new Error('Password dan konfirmasi password tidak cocok.');
+      }
+      const newUser = await registerUser({ email, password, passwordConfirm, role: 'user' });
+      console.log('Registrasi berhasil:', newUser);
+      setSuccessMessage('Registrasi berhasil! Silakan login.');
+      setMode('login'); // Ganti mode ke login setelah berhasil registrasi
+    } catch (err: any) {
+      setError(err.message || 'Gagal melakukan registrasi.');
+      console.error('Registrasi gagal:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!show) {
+    return null;
+  }
+
+  const isLoginMode = mode === 'login';
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity" onClick={() => onClose()}>
+      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md m-4 transform transition-all" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">{isLoginMode ? 'Masuk' : 'Daftar Akun Baru'}</h2>
+          <button onClick={() => onClose()} className="text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
+        </div>
+
+        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-4" role="alert">{error}</div>}
+        {successMessage && <div className="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded-md mb-4" role="alert">{successMessage}</div>}
+
+        <form onSubmit={isLoginMode ? handleLogin : handleRegister}>
+          {!isLoginMode && (
+            <div className="mb-4">
+              <label className="block text-slate-700 text-sm font-bold mb-2" htmlFor="name">
+                Nama Lengkap
+              </label>
+              <input
+                className="shadow-sm appearance-none border rounded-md w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                id="name"
+                type="text"
+                placeholder="Nama Anda"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <div className="mb-4">
+            <label className="block text-slate-700 text-sm font-bold mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              className="shadow-sm appearance-none border rounded-md w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              id="email"
+              type="email"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-slate-700 text-sm font-bold mb-2" htmlFor="password">
+              Password
+            </label>
+            <input
+              className="shadow-sm appearance-none border rounded-md w-full py-2 px-3 text-slate-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              id="password"
+              type="password"
+              placeholder="******************"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {!isLoginMode && (
+              <div className="mb-6">
+                <label className="block text-slate-700 text-sm font-bold mb-2" htmlFor="passwordConfirm">
+                  Konfirmasi Password
+                </label>
+                <input
+                  className="shadow-sm appearance-none border rounded-md w-full py-2 px-3 text-slate-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  id="passwordConfirm"
+                  type="password"
+                  placeholder="******************"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+          </div>
+          <div className="flex items-center justify-between flex-col">
+            <button
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors disabled:bg-slate-400"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Memproses...' : (isLoginMode ? 'Masuk' : 'Daftar')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode(isLoginMode ? 'register' : 'login')}
+              className="inline-block align-baseline font-bold text-sm text-emerald-600 hover:text-emerald-800 mt-4"
+            >
+              {isLoginMode ? 'Belum punya akun? Daftar di sini' : 'Sudah punya akun? Masuk'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
+
 export default function LandingPage() {
+
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+
+  // State baru untuk status otentikasi
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true); // Mulai dengan loading
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  // Cek token saat komponen dimuat
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      setIsAuthLoading(true);
+      const { accessToken } = getTokens();
+
+      if (!accessToken) {
+        console.log("Tidak ada token, pengguna logout.");
+        setIsAuthenticated(false);
+        setIsAuthLoading(false);
+        setUserData(null);
+        return;
+      }
+
+      try {
+        // Coba ambil profil pengguna untuk memvalidasi token
+        console.log("Token ditemukan, memvalidasi...");
+        const profile = await authApiHandlers.getProfileData(); // Menggunakan fungsi getProfileData dari authApiHandlers
+        if (!profile) throw { status: 401, message: "Token tidak valid" };
+        console.log("Token valid, pengguna login:", profile);
+        setIsAuthenticated(true);
+        setUserData(profile);
+      } catch (error: any) {
+        console.error("Gagal memvalidasi token:", error.message);
+        if (error.status === 401 || error.status === 403) {
+          console.log("Token tidak valid atau expired, membersihkan token.");
+          clearTokens(); // Hapus token yang tidak valid
+        }
+        setIsAuthenticated(false);
+        setUserData(null);
+      } finally {
+        setIsAuthLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []); // [] berarti hanya berjalan sekali saat mount
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    }
+  }, []);
+
+  const openPricingModal = (packageType: string) => {
+    setSelectedPackage(packageType);
+    setShowPricingModal(true);
+  };
+
+  const closePricingModal = () => {
+    setShowPricingModal(false);
+  };
+
+  const openAuthModal = (mode: 'login' | 'register') => {
+    setAuthMode(mode);
+    setShowAuthModal(true);
+  };
+
+  const closeAuthModal = (loginSuccess?: boolean) => {
+    setShowAuthModal(false);
+    // Jika login sukses, kita refresh status auth
+    if (loginSuccess) {
+      setIsAuthLoading(true);
+      authApiHandlers.getProfileData()
+        .then((profile: Profile | null) => {
+          if (profile) {
+            setIsAuthenticated(true);
+            setUserData(profile);
+          }
+        })
+        .catch((err: any) => console.error("Gagal fetch profil setelah login", err))
+        .finally(() => setIsAuthLoading(false));
+    }
+  };
+
+  const handleLogout = () => {
+    clearTokens();
+    setIsAuthenticated(false);
+    setUserData(null);
+    console.log("Pengguna telah logout.");
+  };
   return (
     <div className="antialiased overflow-x-hidden border-t-[12px] border-[#00A651] font-inter">
       {/* Navbar */}
@@ -46,14 +339,14 @@ export default function LandingPage() {
           </a>
         </div>
         <div className="flex gap-4 items-center">
-          <a href="#" className="hidden md:block text-sm font-semibold text-white hover:text-[#FFEA28] transition drop-shadow-md">
+          {/* <a onClick={() => openAuthModal('login')}
+            className="hidden md:block text-sm font-semibold text-white hover:text-[#FFEA28] transition drop-shadow-md">
             Masuk
-          </a>
+          </a> */}
           <a
-            href="#contact"
-            className="hover:bg-[#222] transition transform hover:-translate-y-0.5 text-sm font-bold text-white bg-black border-white border-2 rounded-full pt-2.5 pr-5 pb-2.5 pl-5 shadow-[4px_4px_0px_0px_rgba(255,234,40,1)]"
+            onClick={() => openAuthModal('login')} className="hover:bg-[#222] transition transform hover:-translate-y-0.5 text-sm font-bold text-white bg-black border-white border-2 rounded-full pt-2.5 pr-5 pb-2.5 pl-5 shadow-[4px_4px_0px_0px_rgba(255,234,40,1)]"
           >
-            Hubungi Kami
+            Masuk
           </a>
         </div>
       </nav>
@@ -1196,6 +1489,18 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      <PricingModal
+        show={showPricingModal}
+        onClose={closePricingModal}
+        packageType={selectedPackage}
+      />
+
+      <AuthModal
+        show={showAuthModal}
+        onClose={closeAuthModal}
+        initialMode={authMode as 'login' | 'register'}
+      />
     </div>
   );
 }
