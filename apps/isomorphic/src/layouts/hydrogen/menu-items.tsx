@@ -33,8 +33,26 @@ export const menuItems = [
   },
   {
     name: 'Produk',
-    href: routes.dashboard.products,
+    href: '#',
     icon: <PiSquaresFourDuotone />,
+    dropdownItems: [
+      {
+        name: 'Daftar Produk',
+        href: routes.dashboard.products,
+      },
+      {
+        name: 'Name Recommendation',
+        href: routes.dashboard.nameRecommendation,
+      },
+      {
+        name: 'Image Generation',
+        href: routes.dashboard.imageGeneration,
+      },
+      {
+        name: 'Post Instagram',
+        href: routes.dashboard.postInstagram,
+      },
+    ],
   },
   // {
   //   name: 'Toko',

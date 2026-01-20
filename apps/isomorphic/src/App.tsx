@@ -28,6 +28,11 @@ import MenuPage from '@/kedaimaster-menu/page';
 
 import ProtectedRoute from '@/app/ProtectedRoute';
 
+// AI Features Pages
+import NameRecommendationPage from '@/app/shared/ai-features/name-recommendation/index';
+import ImageGenerationPage from '@/app/shared/ai-features/image-generation/index';
+import PostInstagramPage from '@/app/shared/ai-features/post-instagram/index';
+
 // Dummy pages
 const StorePage = () => <div>Store Page</div>;
 const DataPage = () => <div>Data Page</div>;
@@ -70,6 +75,12 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/create" element={<CreateProductPage />} />
             <Route path="/products/:slug/edit" element={<EditProductPage />} />
+            
+            {/* AI Features */}
+            <Route path="/products/name-recommendation" element={<NameRecommendationPage />} />
+            <Route path="/products/image-generation" element={<ImageGenerationPage />} />
+            <Route path="/products/post-instagram" element={<PostInstagramPage />} />
+
 
             <Route path="/store" element={<StorePage />} />
             <Route path="/uoms" element={<UomPage />} />

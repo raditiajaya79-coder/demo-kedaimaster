@@ -8,6 +8,11 @@ export const routes = {
     productDetails: (slug: string) => `/products/${slug}`,
     editProduct: (slug: string) => `/products/${slug}/edit`,
     
+    // AI Features
+    nameRecommendation: '/products/name-recommendation',
+    imageGeneration: '/products/image-generation',
+    postInstagram: '/products/post-instagram',
+    
     material: '/materials',
     createMaterial: '/materials/create',
     materialDetails: (slug: string) => `/materials/${slug}`,
