@@ -1,8 +1,10 @@
 // src/utils/authApi.js
 
-const API_BASE_URL = 'https://demo-kedaimaster-api.lab.kediritechnopark.com';
+const API_BASE_URL = 'https://scrawlier-linwood-parolable.ngrok-free.dev';
+// const API_BASE_URL = 'https://demo-kedaimaster-api.lab.kediritechnopark.com';
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
+const USER_PROFILE_KEY = 'userProfile';
 
 /**
  * Ambil token dari localStorage
@@ -23,17 +25,33 @@ function saveTokens({ accessToken, refreshToken }) {
 }
 
 /**
- * Hapus token (misalnya saat logout)
+ * Hapus token dan profil (misalnya saat logout)
  */
 export function clearTokens() {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(USER_PROFILE_KEY);
+}
+
+/**
+ * Simpan profil user ke localStorage
+ */
+export function saveUserProfile(profile) {
+  if (profile) localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+}
+
+/**
+ * Ambil profil user dari localStorage
+ */
+export function getUserProfile() {
+  const profile = localStorage.getItem(USER_PROFILE_KEY);
+  return profile ? JSON.parse(profile) : null;
 }
 
 /**
  * Fungsi utama pemanggil API
  */
-export async function apiRequest(endpoint, method = 'POST', data = {}, retry = true) {
+export async function apiRequest(endpoint, method = 'POST', data = {}, retry = true, options = {}) {
   const { accessToken } = getTokens();
 
   try {
@@ -47,23 +65,49 @@ export async function apiRequest(endpoint, method = 'POST', data = {}, retry = t
       headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
+    // Bypass ngrok browser warning
+    headers['ngrok-skip-browser-warning'] = 'true';
+
     // Hanya set Content-Type jika bukan FormData
     const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
     if (!isFormData) {
       headers['Content-Type'] = 'application/json';
     }
 
-    const options = {
+    const fetchOptions = {
       method,
       headers,
     };
 
     if (method !== 'GET' && method !== 'HEAD') {
-      options.body = isFormData ? data : JSON.stringify(data);
+      fetchOptions.body = isFormData ? data : JSON.stringify(data);
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-    const result = await response.json().catch(() => ({}));
+    console.log(`[API Request] ${method} ${API_BASE_URL}${endpoint}`, {
+        headers,
+        isFormData,
+        body: isFormData ? 'FormData' : data
+    });
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, fetchOptions);
+    
+    if (options.responseType === 'blob') {
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            }
+            return response.blob();
+        }
+    }
+    
+    const text = await response.text();
+    let result;
+    try {
+      result = text ? JSON.parse(text) : {};
+    } catch (e) {
+      result = text;
+    }
 
     if (response.ok) return result;
 
@@ -157,6 +201,13 @@ export async function registerUser({ email, password, passwordConfirm, role }) {
 }
 
 /**
+ * GET: Ambil data user yang sedang login
+ */
+export async function fetchCurrentUser() {
+  return apiRequest('/api/v1/users/me', 'GET');
+}
+
+/**
  * Autentikasi pengguna (login)
  *
  * @param {Object} data
@@ -164,20 +215,19 @@ export async function registerUser({ email, password, passwordConfirm, role }) {
  * @param {string} data.password
  *
  * ✅ RESPONSE 200 OK
- * Contoh respons sukses (login berhasil):
- * {
- *   "accessToken": "string",
- *   "refreshToken": "string",
- *   "user": {
- *     "id": "string",
- *     "email": "string",
- *     "role": "Sistem Administrator"
- *   }
- * }
  */
 export async function authenticate({ email, password }) {
   const result = await apiRequest('/authenticate', 'POST', { email, password });
   saveTokens(result); // simpan token setelah login
+  
+  // Ambil profil user lengkap dan simpan
+  try {
+    const userProfile = await fetchCurrentUser();
+    saveUserProfile(userProfile);
+  } catch (error) {
+    console.error('Failed to fetch user profile after login:', error);
+  }
+  
   return result;
 }
 
@@ -223,4 +273,50 @@ export function getProfile() {
 export function logOut() {
   clearTokens();
   window.location.href = '/';
+}
+
+/**
+ * Connect to Instagram
+ * Redirects user to the backend connection endpoint
+ */
+export async function connectInstagram(userId) {
+  if (!userId) {
+    console.error('User ID is required for Instagram connection');
+    return null;
+  }
+  
+  const { accessToken } = getTokens();
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+    'ngrok-skip-browser-warning': 'true'
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/products/post/instagram/auth?userId=${userId}`, {
+      method: 'GET',
+      headers
+    });
+
+    if (!response.ok) {
+      console.error('Instagram auth error:', response.status, response.statusText);
+      return null;
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const json = await response.json();
+      return json.url || (typeof json === 'string' ? json : null);
+    } else {
+      // Assume it's a plain text URL
+      const text = await response.text();
+      // Basic validation to check if it looks like a URL
+      if (text && (text.startsWith('http') || text.startsWith('/'))) {
+        return text;
+      }
+      return null;
+    }
+  } catch (error) {
+    console.error('Failed to initiate Instagram connection:', error);
+    throw error;
+  }
 }

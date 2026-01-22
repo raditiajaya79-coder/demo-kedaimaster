@@ -294,3 +294,87 @@ export async function getServingTypes() {
 export async function getPaymentTypes() {
   return apiRequest('/api/v1/products/paymentTypes', 'GET');
 }
+
+/**
+ * POST: Ambil rekomendasi nama produk menggunakan AI
+ *
+ * @param {Object} data - Data untuk rekomendasi
+ * @param {string} data.image - Base64 string gambar produk (dengan prefix data:image/...)
+ * @returns {Promise<Array<string>>} Daftar rekomendasi nama
+ */
+export async function getNameRecommendation(data) {
+  if (!data?.image) throw new Error('Image data is required');
+  
+  const formData = new FormData();
+  
+  // Gunakan helper base64ToFile yang sudah ada di file ini
+  // Kita beri nama file default 'product-image.jpg'
+  const file = base64ToFile(data.image, 'product-image.jpg');
+  if (file) {
+    formData.append('image', file);
+  } else {
+    // Jika bukan base64 valid (mungkin sudah binary), coba append langsung
+    formData.append('image', data.image);
+  }
+  
+  return apiRequest('/api/v1/products/ai/name-recommendation', 'POST', formData);
+}
+
+/**
+ * POST: Posting ke Instagram
+ *
+ * @param {Object} data - Data postingan
+ * @param {string} data.id - ID Produk
+ * @param {string} data.caption - Caption postingan
+ * @param {File|Blob} data.image - File gambar (binary)
+ * @returns {Promise<Object>} Hasil posting
+ */
+export async function postToInstagram(data) {
+  if (!data?.id) throw new Error('Product ID is required');
+  if (!data?.caption) throw new Error('Caption is required');
+  if (!data?.image) throw new Error('Image file is required');
+
+  const formData = new FormData();
+  formData.append('id', data.id);
+  formData.append('caption', data.caption);
+  formData.append('image', data.image);
+
+  return apiRequest('/api/v1/products/post/instagram', 'POST', formData);
+}
+
+/**
+ * POST: Generate/Enhance Image
+ *
+ * @param {Object} data - Data generation
+ * @param {string} data.prompt - Prompt for generation
+ * @param {File|Blob} [data.photo] - File gambar (binary, opsional)
+ * @returns {Promise<Blob>} Generated image blob
+ */
+export async function generateImage(data) {
+  if (!data?.prompt) throw new Error('Prompt is required');
+
+  const formData = new FormData();
+  formData.append('prompt', data.prompt);
+  
+  if (data.photo) {
+    formData.append('photo', data.photo);
+  }
+
+  return apiRequest('/api/v1/products/photo/generate', 'POST', formData);
+}
+
+/**
+ * POST: Generate Caption using AI
+ *
+ * @param {Object} data - Data for caption generation
+ * @param {File|Blob} data.image - File gambar (binary)
+ * @returns {Promise<Object>} { caption: string, imageUrl: string }
+ */
+export async function generateCaption(data) {
+  if (!data?.image) throw new Error('Image file is required');
+
+  const formData = new FormData();
+  formData.append('image', data.image);
+
+  return apiRequest('/api/v1/products/caption/generate', 'POST', formData);
+}
