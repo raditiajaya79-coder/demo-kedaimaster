@@ -9,14 +9,14 @@ import ProfileMenu from '@/layouts/profile-menu';
 import RingBellSolidIcon from '@core/components/icons/ring-bell-solid';
 
 type HeaderMenuRightProps = {
-  setDate: (start: Date | null, end: Date | null, type: string) => void;
+  setDate: (start: Date | null, end: Date | null, type: string, compareLabel: string) => void;
 };
 
 const rangeOptions: DateOption[] = [
   {
     label: "Hari ini",
     value: "harian",
-    compareLabel:"dibanding kemarin",
+    compareLabel: "Dibanding kemarin",
     getRange: () => {
       const now = new Date();
       const start = new Date(now.setHours(0, 0, 0, 0)); // Set start to midnight
@@ -27,7 +27,7 @@ const rangeOptions: DateOption[] = [
   {
     label: "Kemarin",
     value: "kemarin",
-        compareLabel:"dibanding kemarin lusa",
+    compareLabel: "Dibanding kemarin lusa",
 
     getRange: () => {
       const now = new Date();
@@ -39,7 +39,7 @@ const rangeOptions: DateOption[] = [
   },
   {
     label: "Mingguan",
-    value: "mingguan",    compareLabel:"dibanding minggu lalu",
+    value: "mingguan", compareLabel: "Dibanding minggu lalu",
 
     getRange: () => {
       const now = new Date();
@@ -54,7 +54,7 @@ const rangeOptions: DateOption[] = [
   },
   {
     label: "Bulanan",
-    value: "bulanan",    compareLabel:"dibanding bulan lalu",
+    value: "bulanan", compareLabel: "Dibanding bulan lalu",
 
     getRange: () => {
       const now = new Date();
@@ -67,7 +67,7 @@ const rangeOptions: DateOption[] = [
   {
     label: "Tahunan",
     value: "tahunan",
-        compareLabel:"dibanding tahun lalu",
+    compareLabel: "Dibanding tahun lalu",
 
     getRange: () => {
       const now = new Date();
@@ -80,7 +80,7 @@ const rangeOptions: DateOption[] = [
   {
     label: "Pilih Rentang Waktu",
     value: "kustom", // For custom date picker
-    compareLabel:"dibanding sebelumnya",
+    compareLabel: "Dibanding sebelumnya",
   },
 ];
 
@@ -103,7 +103,7 @@ export default function HeaderMenuRight({ setDate }: HeaderMenuRightProps) {
         prevRange.current?.end?.getTime() === end.getTime();
 
       if (!isSame) {
-        setDate(start, end, range.compareLabel);
+        setDate(start, end, range.value, range.compareLabel);
         (prevRange.current as { start: Date | null; end: Date | null }) = { start, end }; // Type assertion for mutability
       }
     } else if (viewType === 'kustom') {
@@ -120,7 +120,7 @@ export default function HeaderMenuRight({ setDate }: HeaderMenuRightProps) {
           defaultValue={viewType}
           onChange={({ start, end, type }) => {
             const selectedOption = rangeOptions.find(option => option.value === type);
-            setDate(start, end, selectedOption?.compareLabel || type); // Use compareLabel from option or fallback to type
+            setDate(start, end, type, selectedOption?.compareLabel || type); // Use compareLabel from option or fallback to type
             setViewType(type); // Set viewType on manual date range selection
           }}
         />

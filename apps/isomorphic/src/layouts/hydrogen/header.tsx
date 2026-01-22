@@ -12,12 +12,12 @@ import SearchWidget from '@/app/shared/search/search';
 export default function Header({
   setDate,
 }: {
-  setDate: (start: Date | null, end: Date | null, type: string) => void;
+  setDate: (start: Date | null, end: Date | null, type: string, compareLabel: string) => void;
 }) {
   // ✅ Fungsi handler dengan tipe parameter yang jelas
-  const handleSetDate = (start: Date | null, end: Date | null, type: string) => {
-    setDate(start, end, type);
-    console.log('Tanggal dipilih:', { start, end, type });
+  const handleSetDate = (start: Date | null, end: Date | null, type: string, compareLabel: string) => {
+    setDate(start, end, type, compareLabel);
+    console.log('Tanggal dipilih:', { start, end, type, compareLabel });
   };
 
   return (

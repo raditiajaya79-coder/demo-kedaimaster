@@ -13,6 +13,7 @@ import {
   PiPhoneSlash,
   PiArrowDownRight,
   PiArrowUpRight,
+  PiInfo
 } from 'react-icons/pi';
 import { useEffect } from 'react';
 
@@ -62,25 +63,17 @@ export default function AppointmentStats({ className, dashboardData, compareType
   }, [dashboardData]);
   // Data dinamis
   const statData: StatType[] = [
-    {
-      title: 'Jumlah Transaksi',
-      amount: transaction.toLocaleString('id-ID'),
-      increased: growthTransaction >= 0,
-      percentage: formatPercent(growthTransaction),
-      compareType: compareType,
-      icon: PiCalendarCheck,
-    },
-    {
-      title: 'Item Favorit',
-      amount: topProduct,
-      increased: true,
-      lastData: cmpTopProduct,
-      compareType: compareType,
-      icon: PiCheckCircle,
-    },
+    // {
+    //   title: 'Item Favorit',
+    //   amount: topProduct,
+    //   increased: true,
+    //   lastData: cmpTopProduct,
+    //   compareType: compareType?.replace(/^\S+\s*/, '') ?? '',
+    //   icon: PiCheckCircle,
+    // },
     {
       title: 'Pendapatan',
-      amount: formatRupiah(income > 0 ? income - outcome : income),
+      amount: formatRupiah(income),
       increased: growthIncome >= 0,
       percentage: formatPercent(growthIncome),
       compareType: compareType,
@@ -93,6 +86,31 @@ export default function AppointmentStats({ className, dashboardData, compareType
       percentage: formatPercent(growthOutcome),
       compareType: compareType,
       icon: PiPhoneSlash,
+    },
+    {
+      title: 'Pendapatan Bersih',
+      amount: formatRupiah(income > 0 ? income - outcome : income),
+      increased: growthIncome >= 0,
+      // percentage: formatPercent(growthIncome),
+      compareType: compareType,
+      icon: PiClock,
+    },
+    {
+      title: 'Jumlah Transaksi',
+      amount: transaction.toLocaleString('id-ID'),
+      increased: growthTransaction >= 0,
+      percentage: formatPercent(growthTransaction),
+      compareType: compareType,
+      icon: PiCalendarCheck,
+    },
+
+    {
+      title: 'Item Favorit',
+      amount: topProduct,
+      increased: true,
+      lastData: cmpTopProduct,
+      compareType: compareType?.replace(/^\S+\s*/, '') ?? '',
+      icon: PiCheckCircle,
     },
   ];
 
@@ -153,8 +171,8 @@ export function StatGrid({ statData }: { statData: StatType[] }) {
   );
 }
 
-function StatCard({ className, transaction, compareType }: StatCardProps) {
-  const { icon, title, amount, increased, percentage, lastData } = transaction;
+function StatCard({ className, transaction }: StatCardProps) {
+  const { icon, title, amount, increased, percentage, lastData, compareType } = transaction;
   const Icon = icon;
 
   return (
@@ -176,7 +194,7 @@ function StatCard({ className, transaction, compareType }: StatCardProps) {
           <p className="font-medium text-gray-500 group-first:text-gray-100">
             {title}
           </p>
-          <p className="text-lg font-bold text-gray-900 group-first:text-gray-0 2xl:text-[20px] 3xl:text-3xl">
+          <p className="text-lg font-bold text-gray-900 group-first:text-gray-0 2xl:text-[20px] 3xl:text-2xl">
             {amount}
           </p>
         </div>
@@ -203,21 +221,27 @@ function StatCard({ className, transaction, compareType }: StatCardProps) {
                   : 'bg-red-lighter/70'
               )}
             >
-              {increased ? (
-                <PiArrowUpRight className="h-auto w-4" />
+              {percentage == undefined ? (
+                <PiInfo className="h-auto w-4" />
               ) : (
-                <PiArrowDownRight className="h-auto w-4" />
-              )}
+                <>
+                  {increased ? (
+                    <PiArrowUpRight className="h-auto w-4" />
+                  ) : (
+                    <PiArrowDownRight className="h-auto w-4" />
+                  )}
+                </>)}
             </span>
             <span className="font-semibold leading-none group-first:text-gray-0">
-              {percentage}
+              &nbsp;{percentage}
             </span>
           </div>
           <span className="truncate leading-none text-gray-500 group-first:text-gray-100">
-            {increased ? 'Meningkat' : 'Menurun'}&nbsp;{compareType}
+            &nbsp;{percentage ? compareType : 'Akumulasi pendapatan dan pengeluaran'}
           </span>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
-}
+} 

@@ -106,11 +106,11 @@ export default function SmartDateSelector({
           if (hasCustom) {
             // update opsi custom lama
             return prev.map((opt) =>
-              opt.value.startsWith("custom-") ? { ...opt, label: newLabel, value: newValue, compareLabel: "dibanding sebelumnya" } : opt
+              opt.value.startsWith("custom-") ? { ...opt, label: newLabel, value: newValue, compareLabel: "Dibanding sebelumnya" } : opt
             );
           } else {
             // belum ada opsi custom → buat baru
-            return [...prev, { label: newLabel, value: newValue, compareLabel: "dibanding sebelumnya" }];
+            return [...prev, { label: newLabel, value: newValue, compareLabel: "Dibanding sebelumnya" }];
           }
         });
 

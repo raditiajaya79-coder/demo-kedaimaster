@@ -38,6 +38,7 @@ interface DateRange {
   start: Date | null;
   end: Date | null;
   type: string;
+  compareLabel: string;
 }
 
 function App() {
@@ -45,10 +46,12 @@ function App() {
     start: null,
     end: null,
     type: '',
+    compareLabel: '',
   });
 
-  const handleSetDate = (start: Date | null, end: Date | null, type: string) => {
-    setDateRange({ start, end, type });
+  const handleSetDate = (start: Date | null, end: Date | null, type: string, compareLabel: string) => {
+    console.log(compareLabel)
+    setDateRange({ start, end, type, compareLabel });
   };
 
   return (

@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 export default function HydrogenLayout({
   setDate,
 }: {
-  setDate: (start: Date | null, end: Date | null, type: string) => void;
+  setDate: (start: Date | null, end: Date | null, type: string, compareLabel: string) => void;
 }) {
   return (
     <main className="flex min-h-screen flex-grow">

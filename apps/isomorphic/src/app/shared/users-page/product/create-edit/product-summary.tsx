@@ -19,7 +19,7 @@ export default function UserSummary({ className }: UserSummaryProps) {
   const roleOptions = [
     { value: 'Sistem Administrator', label: 'Sistem Administrator' },
     { value: 'CASHIER', label: 'Cashier' },
-    { value: 'BUSSINESS_OWNER', label: 'Business Owner' },
+    { value: 'BUSINESS_OWNER', label: 'Business Owner' },
     { value: 'SUPERVISOR', label: 'Supervisor' },
   ];
 

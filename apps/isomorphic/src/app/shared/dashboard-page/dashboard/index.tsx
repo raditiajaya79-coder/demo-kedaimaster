@@ -24,6 +24,7 @@ interface DateRange {
   start: Date | null;
   end: Date | null;
   type: string;
+  compareLabel: string;
 }
 
 interface DashboardData {
@@ -50,16 +51,15 @@ export default function AppointmentDashboard({ dateRange }: { dateRange: DateRan
   // Fetch dashboard data
   const fetchDashboardData = async (start: Date, end: Date, type: string) => {
     const startStr = `${start.getFullYear()}-${(start.getMonth() + 1).toString().padStart(2, '0')}-${start.getDate().toString().padStart(2, '0')}`;
-const endStr = `${end.getFullYear()}-${(end.getMonth() + 1).toString().padStart(2, '0')}-${end.getDate().toString().padStart(2, '0')}`;
+    const endStr = `${end.getFullYear()}-${(end.getMonth() + 1).toString().padStart(2, '0')}-${end.getDate().toString().padStart(2, '0')}`;
 
-
-    console.log(startStr,endStr)
+    console.log(startStr, endStr)
     const data = await handleDashboardData(startStr, endStr, type);
-    if(data) setDashboardData(data); // langsung set semua data
+    if (data) setDashboardData(data); // langsung set semua data
 
-    
+
     const dataa = await transactionsApiHandlers.getByDateRange(startStr, endStr);
-    if(dataa) setTransactionsData(dataa);
+    if (dataa) setTransactionsData(dataa);
 
   };
 
@@ -89,9 +89,12 @@ const endStr = `${end.getFullYear()}-${(end.getMonth() + 1).toString().padStart(
   }, [dateRange.start, dateRange.end, dateRange.type]);
 
   return (
-    <div className="grid grid-cols-12 gap-6 @container @[59rem]:gap-7 3xl:gap-8">
-      {/* Statistik utama */}
-      <AppointmentStats className="col-span-full order-1 @[59rem]:order-1 @[90rem]:order-1" dashboardData={dashboardData} />
+    <div className="grid grid-cols-12 gap-6 @container @[59rem]:gap-7 3xl:gap-8">{/* Statistik utama */}
+      <AppointmentStats
+        className="col-span-full order-1 @[59rem]:order-1 @[90rem]:order-1"
+        dashboardData={dashboardData}
+        compareType={dateRange.compareLabel}
+      />
 
       {/* Total Appointment */}
       <TotalAppointment
@@ -100,23 +103,30 @@ const endStr = `${end.getFullYear()}-${(end.getMonth() + 1).toString().padStart(
         previousWeekIncome={dashboardData?.previousWeekIncome ?? []}
       />
 
-      {/* Daftar todo dan patients */}
-            <TransactionsHistory className="col-span-full order-3 @[59rem]:col-span-6 @[59rem]:order-3 @[90rem]:col-span-4 @[90rem]:order-3" stockInList={transactionsData ?? []} />
-      <AppointmentTodo className="col-span-full order-3 @[59rem]:col-span-6 @[59rem]:order-3 @[90rem]:col-span-4 @[90rem]:order-3" stockInList={dashboardData?.stockInList ?? []} />
-      <Patients className="col-span-full order-4 @[59rem]:col-span-6 @[59rem]:order-4 @[90rem]:col-span-4 @[90rem]:order-4" dashboardData={dashboardData} />
+      {/* Patients — DIPINDAHKAN ke sini */}
+      <Patients
+        className="col-span-full order-3 @[59rem]:col-span-6 @[59rem]:order-3 @[90rem]:col-span-4 @[90rem]:order-3"
+        dashboardData={dashboardData}
+      />
 
-      {/* Department */}
-      {/* <Department className="col-span-full order-5 @[59rem]:col-span-6 @[59rem]:order-5 @[90rem]:col-span-8 @[90rem]:order-5" /> */}
+      {/* Daftar todo dan transaksi */}
+      <TransactionsHistory
+        className="col-span-full order-4 @[59rem]:col-span-6 @[59rem]:order-4 @[90rem]:col-span-4 @[90rem]:order-4"
+        stockInList={transactionsData ?? []}
+      />
 
-      {/* Appointment Patient */}
-      {/* <PatientAppointment className="col-span-full order-6 @[59rem]:col-span-full @[59rem]:order-7 @[90rem]:col-span-7 @[90rem]:order-6" transactionGraph={transactionGraph} /> */}
+      <AppointmentTodo
+        className="col-span-full order-5 @[59rem]:col-span-6 @[59rem]:order-5 @[90rem]:col-span-4 @[90rem]:order-5"
+        stockInList={dashboardData?.stockInList ?? []}
+      />
 
       {/* Appointment Diseases */}
       <AppointmentDiseases
-        className="col-span-full order-7 @[59rem]:col-span-6 @[59rem]:order-6 @[90rem]:col-span-5 @[90rem]:order-7"
+        className="col-span-full order-6 @[59rem]:col-span-6 @[59rem]:order-3 @[90rem]:col-span-4 @[90rem]:order-3"
         cashierInitiatedTransaction={dashboardData?.cashierInitiatedTransaction}
         customerInitiatedTransaction={dashboardData?.customerInitiatedTransaction}
       />
+
     </div>
   );
 }
